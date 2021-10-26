@@ -11,14 +11,14 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import static com.example.practice.ConfProperties.getProperty;
 
 public class PasswordPage {
-    @FindBy(xpath = "//div/input[contains(@class, 'whsOnd zHQkBf')]")
-    public WebElement passwordField;
+    @FindBy(id = "passp-field-passwd")
+    private WebElement passwordField;
 
-    @FindBy(id = "profileIdentifier")
-    public WebElement profileName;
+    @FindBy(className = "CurrentAccount-displayName")
+    private WebElement profileName;
 
-    @FindBy(className = "VfPpkd-vQzf8d")
-    public WebElement nextButton;
+    @FindBy(id = "passp:sign-in")
+    private WebElement nextButton;
 
     @Step
     public void enterPassword(WebDriver driver){

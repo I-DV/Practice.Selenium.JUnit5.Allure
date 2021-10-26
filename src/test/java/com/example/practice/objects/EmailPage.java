@@ -14,47 +14,62 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  */
 public class EmailPage {
 
-    @FindBy(xpath = "//div/a/img[contains(@class, 'gb_tc')]")
+    @FindBy(xpath = "//span[contains(@class, 'mail-NestedList-Item-Name')]")
     public WebElement mailLogo;
 
-    @FindBy(xpath = "//div/input[contains(@class, 'gb_8e')]")
-    public WebElement searchField;
+    @FindBy(xpath = "//input[contains(@class, 'textinput__control')]")
+    private WebElement searchField;
 
-    @FindBy(xpath = "//button[contains(@class, 'gb_hf gb_if')]")
-    public WebElement buttonSearch;
+    @FindBy(css = ".button2_pin_clear-round")
+    private WebElement buttonSearch;
 
-    @FindBy(xpath = "//div[contains(@class, 'T-I T-I-KE L3')]")
-    public WebElement newEmail;
+    @FindBy(xpath = "//div/a[contains(@class, 'mail-ComposeButton js-main-action-compose')]")
+    private WebElement newEmail;
 
-    @FindBy(name = "to")
-    public WebElement emailAdressTyping;
+    @FindBy(className = "composeYabbles")
+    private WebElement emailAdressTyping;
 
-    @FindBy(name = "subjectbox")
-    public WebElement titleTyping;
+    @FindBy(xpath = "//input[contains(@class, 'composeTextField ComposeSubject-TextField')]")
+    private WebElement titleTyping;
 
-    @FindBy(xpath = "//div[contains(@class, 'Am Al editable LW-avf tS-tW')]")
-    public WebElement messageTyping;
+    @FindBy(xpath= "//div[1]/div[1][contains(@placeholder, 'Напишите что-нибудь')]")
+    private WebElement messageTyping;
 
-    @FindBy(xpath = "//div[contains(@class, 'T-I J-J5-Ji aoO v7 T-I-atl L3')]")
-    public WebElement sendButton;
+    @FindBy(css = "button.Button2_view_default")
+    private WebElement sendButton;
 
-    @FindBy(xpath = "//div/span/span[contains(@class, 'bAq')][contains(., 'Письмо отправлено.')]")
-    public WebElement confirmSend;
+    @FindBy(xpath = "//div[contains(@class, 'ComposeDoneScreen-Title')][contains(., 'Письмо отправлено')]")
+    private WebElement confirmSend;
+
+    @FindBy(xpath = "//div/button[3]")
+    private WebElement folders;
+
+    @FindBy(xpath = "//div[1]/span[contains(@class, 'menu__text')]")
+    private WebElement incoming;
 
     @Step
     public int countEmail(WebDriver driver){
-        searchField.sendKeys("Simbirsoft Тестовое задание");
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        searchField.sendKeys("Simbirsoft theme");
         buttonSearch.click();
-        return driver.findElements(By.xpath("//span[contains(@class, 'bog')]/span[contains(@class,'bqe') and text() = 'Simbirsoft Тестовое задание']")).size();
+        folders.click();
+        incoming.click();
+        wait.until(ExpectedConditions
+                .visibilityOfElementLocated(By
+                        .cssSelector("span.mail-ui-Link")));
+        return driver.findElements(By.xpath("//span[contains(@title, 'Simbirsoft theme')]")).size();
     }
     @Step
     public void newEmailSend(int i, WebDriver driver,String userEmail){
         WebDriverWait wait = new WebDriverWait(driver, 10);
+        String s = "Найдено "+ i + ( i==1 ? " письмо" : ((i<5)&&(i!=0) ? " письма" : " писем"));
         newEmail.click();
         wait.until(ExpectedConditions.visibilityOf(emailAdressTyping));
         emailAdressTyping.sendKeys(userEmail);
-        titleTyping.sendKeys("Simbirsoft Тестовое задание.Идрисов");
-        messageTyping.sendKeys(String.valueOf(i));
+        titleTyping.click();
+        titleTyping.sendKeys("Simbirsoft theme");
+        messageTyping.click();
+        messageTyping.sendKeys(s);
         sendButton.click();
         wait.until(ExpectedConditions.visibilityOf(confirmSend));
     }

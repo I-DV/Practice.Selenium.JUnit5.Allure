@@ -35,8 +35,8 @@ public class EmailTest {
         System.setProperty("webdriver.chrome.driver", getProperty("chromedriver"));
         driver = new RemoteWebDriver(new URL("http://localhost:4444/wd/hub"), cap);
         driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(20, TimeUnit.SECONDS);
-        driver.get("https://www.google.com/");
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        driver.get("https://www.yandex.ru/");
 
         mainPage = new MainPage(driver);
         entrancePage = new EntrancePage(driver);
@@ -57,9 +57,9 @@ public class EmailTest {
      */
     @Test
     public void checkmail() {
-        entrancePage.enterLogin(mainPage.enterButton,getProperty("userLogin"));
+        entrancePage.enterLogin(mainPage.enterButton,getProperty("userLogin"),driver);
         passwordPage.enterPassword(driver);
-        mainPage.assertLoggedIn(getProperty("userEmail"));
+        mainPage.assertLoggedIn(getProperty("userLogin"));
         mainPage.openMail(driver, emailPage.mailLogo);
         emailPage.newEmailSend(emailPage.countEmail(driver), driver,getProperty("userEmail"));
 
