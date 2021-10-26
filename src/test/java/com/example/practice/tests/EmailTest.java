@@ -59,8 +59,8 @@ public class EmailTest {
     public void checkmail() {
         entrancePage.enterLogin(mainPage.enterButton,getProperty("userLogin"),driver);
         passwordPage.enterPassword(driver);
-        mainPage.assertLoggedIn(getProperty("userLogin"));
-        mainPage.openMail(driver, emailPage.mailLogo);
+        mainPage.assertLoggedIn(getProperty("userLogin"))
+        .openMail(driver, emailPage.getMailLogo());
         emailPage.newEmailSend(emailPage.countEmail(driver), driver,getProperty("userEmail"));
 
     }

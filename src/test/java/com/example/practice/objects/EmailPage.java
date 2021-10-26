@@ -14,8 +14,12 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  */
 public class EmailPage {
 
+    public WebElement getMailLogo() {
+        return mailLogo;
+    }
+
     @FindBy(xpath = "//span[contains(@class, 'mail-NestedList-Item-Name')]")
-    public WebElement mailLogo;
+    private WebElement mailLogo;
 
     @FindBy(xpath = "//input[contains(@class, 'textinput__control')]")
     private WebElement searchField;

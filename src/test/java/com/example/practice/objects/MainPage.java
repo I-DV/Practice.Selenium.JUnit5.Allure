@@ -24,8 +24,9 @@ public class MainPage {
     private WebElement userName;
 
     @Step
-    public void assertLoggedIn(String property){
+    public MainPage assertLoggedIn(String property){
         assertEquals(property, userName.getAttribute("innerText"));
+        return this;
     }
 
     @Step
