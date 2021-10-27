@@ -1,5 +1,6 @@
 package com.example.practice.objects;
 
+import com.example.practice.AbstractHandler;
 import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -10,7 +11,9 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import static com.example.practice.ConfProperties.getProperty;
 
-public class PasswordPage {
+public class PasswordPage extends AbstractHandler {
+    private final WebDriver driver;
+
     @FindBy(id = "passp-field-passwd")
     private WebElement passwordField;
 
@@ -21,7 +24,7 @@ public class PasswordPage {
     private WebElement nextButton;
 
     @Step
-    public void enterPassword(WebDriver driver){
+    public void enterPassword(){
         WebDriverWait wait = new WebDriverWait(driver, 10);
         wait.until(ExpectedConditions.visibilityOf(profileName));
         passwordField.sendKeys(getProperty("userPassword"));
@@ -29,6 +32,13 @@ public class PasswordPage {
     }
 
     public PasswordPage(WebDriver driver) {
+        this.driver = driver;
         PageFactory.initElements(driver, this);
+    }
+
+    @Override
+    public boolean testStep() {
+        enterPassword();
+        return checkNext();
     }
 }

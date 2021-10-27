@@ -1,5 +1,6 @@
 package com.example.practice.tests;
 
+import com.example.practice.AbstractHandler;
 import com.example.practice.objects.EmailPage;
 import com.example.practice.objects.EntrancePage;
 import com.example.practice.objects.MainPage;
@@ -19,10 +20,8 @@ import static com.example.practice.ConfProperties.getProperty;
 
 public class EmailTest {
     private WebDriver driver;
-    private MainPage mainPage;
-    private EntrancePage entrancePage;
-    private PasswordPage passwordPage;
-    private EmailPage emailPage;
+    private AbstractHandler handler;
+
 
     /**
      *
@@ -38,10 +37,12 @@ public class EmailTest {
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         driver.get("https://www.yandex.ru/");
 
-        mainPage = new MainPage(driver);
-        entrancePage = new EntrancePage(driver);
-        passwordPage = new PasswordPage(driver);
-        emailPage = new EmailPage(driver);
+        AbstractHandler handler= new MainPage(driver);
+        handler.link(new EntrancePage(driver))
+                .link(new PasswordPage(driver))
+                .link(new MainPage(driver))
+                .link(new EmailPage(driver));
+        setHandler(handler);
     }
 
     /**
@@ -57,11 +58,13 @@ public class EmailTest {
      */
     @Test
     public void checkmail() {
-        entrancePage.enterLogin(mainPage.enterButton,getProperty("userLogin"),driver);
-        passwordPage.enterPassword(driver);
-        mainPage.assertLoggedIn(getProperty("userLogin"))
-        .openMail(driver, emailPage.getMailLogo());
-        emailPage.newEmailSend(emailPage.countEmail(driver), driver,getProperty("userEmail"));
+        handler.testStep();
+    }
 
+    /**
+     *
+     */
+    public void setHandler(AbstractHandler handler) {
+        this.handler = handler;
     }
 }
