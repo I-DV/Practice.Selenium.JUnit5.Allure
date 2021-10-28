@@ -1,6 +1,6 @@
 package com.example.practice.objects;
 
-import com.example.practice.AbstractHandler;
+import com.example.practice.tests.EmailTest;
 import io.qameta.allure.Step;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -13,14 +13,12 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.Set;
 
-import static com.example.practice.ConfProperties.getProperty;
-
 /**
  *
  */
-public class EmailPage extends AbstractHandler {
+public class EmailPage {
+    private static int count;
     private final WebDriver driver;
-
     @FindBy(xpath = "//span[contains(@class, 'mail-NestedList-Item-Name')]")
     private WebElement mailLogo;
     @FindBy(xpath = "//input[contains(@class, 'textinput__control')]")
@@ -49,11 +47,21 @@ public class EmailPage extends AbstractHandler {
         PageFactory.initElements(driver, this);
     }
 
+    public static int getCount() {
+        return count;
+    }
+
+    public static void setCount(int count) {
+        EmailPage.count = count;
+    }
+
     /**
+     * count the number of email in the inbox with a title "Simbirsoft theme"
      *
+     * @return return this page
      */
     @Step
-    public int countEmail() {
+    public EmailPage countEmail() {
         WebDriverWait wait = new WebDriverWait(driver, 10);
         searchField.sendKeys("Simbirsoft theme");
         buttonSearch.click();
@@ -62,11 +70,15 @@ public class EmailPage extends AbstractHandler {
         wait.until(ExpectedConditions
                 .visibilityOfElementLocated(By
                         .cssSelector("span.mail-ui-Link")));
-        return driver.findElements(By.xpath("//span[contains(@title, 'Simbirsoft theme')]")).size();
+        setCount(driver.findElements(By.xpath("//span[contains(@title, 'Simbirsoft theme')]")).size());
+        return this;
     }
 
     /**
+     * sends a letter to itself with the count of letter
      *
+     * @param i         count of email
+     * @param userEmail transfer user Email
      */
     @Step
     public void newEmailSend(int i, String userEmail) {
@@ -83,15 +95,12 @@ public class EmailPage extends AbstractHandler {
         wait.until(ExpectedConditions.visibilityOf(confirmSend));
     }
 
-    /**
-     *
-     */
-    public void mailMain(){
+    public EmailPage mailMain() {
         WebDriverWait wait = new WebDriverWait(driver, 10);
         String newWindow = (new WebDriverWait(driver, 10))
                 .until((ExpectedCondition<String>) driver -> {
                             Set<String> newWindowsSet = driver.getWindowHandles();
-                            newWindowsSet.removeAll(getOldWindowsSet());
+                            newWindowsSet.removeAll(EmailTest.getOldWindowsSet());
                             return newWindowsSet.size() > 0 ?
                                     newWindowsSet.iterator().next() : null;
                         }
@@ -99,15 +108,6 @@ public class EmailPage extends AbstractHandler {
 
         driver.switchTo().window(newWindow);
         wait.until(ExpectedConditions.visibilityOf(mailLogo));
-    }
-
-    /**
-     *
-     */
-    @Override
-    public boolean testStep() {
-        mailMain();
-        newEmailSend(countEmail(),getProperty("userEmail"));
-        return checkNext();
+        return this;
     }
 }

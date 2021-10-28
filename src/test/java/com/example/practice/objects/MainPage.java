@@ -1,6 +1,6 @@
 package com.example.practice.objects;
 
-import com.example.practice.AbstractHandler;
+import com.example.practice.tests.EmailTest;
 import io.qameta.allure.Step;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -9,10 +9,9 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
-import static com.example.practice.ConfProperties.getProperty;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MainPage extends AbstractHandler {
+public class MainPage {
     private final WebDriver driver;
 
     @FindBy(xpath = "//div[contains(@class, 'desk-notif-card__login-new-item-title')]")
@@ -29,46 +28,42 @@ public class MainPage extends AbstractHandler {
     }
 
     /**
+     * opening an autorization form
      *
+     * @return creates a page and passes the driver to it
      */
     @Step
-    public MainPage assertLoggedIn(String property) {
-        assertEquals(property, userName.getAttribute("innerText"));
+    public EntrancePage loggedIn() {
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        wait.until(ExpectedConditions.visibilityOf(enterButton));
+        enterButton.click();
+        return new EntrancePage(driver);
+    }
+
+    /**
+     * autorization check
+     *
+     * @param userLogin transfer user login
+     * @return return this page
+     */
+    @Step
+    public MainPage assertLoggedIn(String userLogin) {
+        assertEquals(userLogin, userName.getAttribute("innerText"));
         return this;
     }
 
     /**
+     * openin email page
      *
+     * @return creates a page and passes the driver to it
      */
     @Step
-    public void openMail() {
+    public EmailPage openMail() {
         WebDriverWait wait = new WebDriverWait(driver, 10);
         wait.until(ExpectedConditions.visibilityOf(emailEntrance));
-        setOldWindowsSet(driver.getWindowHandles());
+        EmailTest.setOldWindowsSet(driver.getWindowHandles());
         emailEntrance.click();
+        return new EmailPage(driver);
     }
 
-    /**
-     *
-     */
-    private void loggedInn() {
-        if (!isStatus()) {
-            WebDriverWait wait = new WebDriverWait(driver, 10);
-            wait.until(ExpectedConditions.visibilityOf(enterButton));
-            enterButton.click();
-            setStatus(true);
-        } else {
-            assertLoggedIn(getProperty("userLogin"))
-                    .openMail();
-        }
-    }
-
-    /**
-     *
-     */
-    @Override
-    public boolean testStep() {
-        loggedInn();
-        return checkNext();
-    }
 }

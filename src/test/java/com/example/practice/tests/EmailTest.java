@@ -1,10 +1,7 @@
 package com.example.practice.tests;
 
-import com.example.practice.AbstractHandler;
 import com.example.practice.objects.EmailPage;
-import com.example.practice.objects.EntrancePage;
 import com.example.practice.objects.MainPage;
-import com.example.practice.objects.PasswordPage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,17 +11,28 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static com.example.practice.ConfProperties.getProperty;
 
 public class EmailTest {
+    private static Set<String> oldWindowsSet;
     private WebDriver driver;
-    private AbstractHandler handler;
+    private MainPage mainPage;
 
+    public static Set<String> getOldWindowsSet() {
+        return oldWindowsSet;
+    }
+
+    public static void setOldWindowsSet(Set<String> oldWindowsSet) {
+        EmailTest.oldWindowsSet = oldWindowsSet;
+    }
 
     /**
+     * starting driver setup
      *
+     * @throws MalformedURLException possible exception
      */
     @BeforeEach
     public void setUp() throws MalformedURLException {
@@ -37,16 +45,12 @@ public class EmailTest {
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         driver.get("https://www.yandex.ru/");
 
-        AbstractHandler handler= new MainPage(driver);
-        handler.link(new EntrancePage(driver))
-                .link(new PasswordPage(driver))
-                .link(new MainPage(driver))
-                .link(new EmailPage(driver));
-        setHandler(handler);
+        mainPage = new MainPage(driver);
+
     }
 
     /**
-     *
+     * shutting down the driver
      */
     @AfterEach
     public void tearDown() {
@@ -54,17 +58,17 @@ public class EmailTest {
     }
 
     /**
-     *
+     * autorization,receiving the number of messages, sending a letter to itself with the count of email
      */
     @Test
     public void checkmail() {
-        handler.testStep();
-    }
-
-    /**
-     *
-     */
-    public void setHandler(AbstractHandler handler) {
-        this.handler = handler;
+        mainPage.loggedIn()
+                .enterLogin(getProperty("userLogin"))
+                .enterPassword()
+                .assertLoggedIn(getProperty("userLogin"))
+                .openMail()
+                .mailMain()
+                .countEmail()
+                .newEmailSend(EmailPage.getCount(), getProperty("userEmail"));
     }
 }
