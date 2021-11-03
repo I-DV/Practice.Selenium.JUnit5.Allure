@@ -6,27 +6,26 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-public class EntrancePage {
+public class EntrancePage extends AbstractPage {
 
-    private final WebDriver driver;
-    @FindBy(id = "passp-field-login")
-    private WebElement loginField;
-    @FindBy(id = "passp:sign-in")
-    private WebElement nextButton;
+	@FindBy(id = "passp-field-login")
+	private WebElement loginField;
+	@FindBy(id = "passp:sign-in")
+	private WebElement nextButton;
 
 
-    public EntrancePage(WebDriver driver) {
-        this.driver = driver;
-        PageFactory.initElements(driver, this);
-    }
+	public EntrancePage(WebDriver driver) {
+		this.driver = driver;
+		PageFactory.initElements(driver, this);
+	}
 
-    /**
-     * input user login
-     */
-    @Step
-    public PasswordPage enterLogin(String userLogin) {
-        loginField.sendKeys(userLogin);
-        nextButton.click();
-        return new PasswordPage(driver);
-    }
+	/**
+	 * input user login
+	 */
+	@Step
+	public PasswordPage enterLogin(String userLogin) {
+		loginField.sendKeys(userLogin);
+		nextButton.click();
+		return new PasswordPage(driver);
+	}
 }
